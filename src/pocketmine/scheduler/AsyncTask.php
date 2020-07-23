@@ -149,6 +149,22 @@ abstract class AsyncTask extends Collectable{
 	public function getTaskId(){
 		return $this->taskId;
 	}
+	
+	/**
+	 * @param mixed $result
+	 *
+	 * @return void
+	 */
+	public function setHighPriority(bool $state = true){
+		$this->highPriority = $state;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isHighPriority() : bool {
+		return $this->highPriority;
+	}
 
 	/**
 	 * @deprecated
