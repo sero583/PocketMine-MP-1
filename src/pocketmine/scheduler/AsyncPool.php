@@ -250,6 +250,20 @@ class AsyncPool{
 		unset($this->tasks[$task->getTaskId()]);
 		unset($this->taskWorkers[$task->getTaskId()]);
 	}
+	
+	/**
+	 * This will start all high priority tasks, so they get finished executing before shutdown.
+	 */
+	public function finishPriorityTasks() : void {
+		foreach($this->tasks as $taskId => $task) {
+			if($task->isHighPriority()===true) {
+				if($task->isRunning()===false) {
+					$task->run();
+				}
+				unset($this->tasks[$taskId]);
+			}
+		}
+	}
 
 	/**
 	 * Removes all tasks from the pool, cancelling where possible. This will block until all tasks have been
@@ -347,6 +361,7 @@ class AsyncPool{
 	 * Cancels all pending tasks and shuts down all the workers in the pool.
 	 */
 	public function shutdown() : void{
+		$this->finishPriorityTasks();
 		$this->collectTasks();
 		$this->removeTasks();
 		foreach($this->workers as $worker){
